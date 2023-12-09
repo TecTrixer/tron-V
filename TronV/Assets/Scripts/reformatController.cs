@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class playerController : MonoBehaviour
+public class reformatController : MonoBehaviour
 {
     // Private Physics Variables
     private Rigidbody rb;
