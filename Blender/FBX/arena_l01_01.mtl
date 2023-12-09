@@ -1,0 +1,42 @@
+# Blender 4.0.2 MTL File: 'arena_l01_01.blend'
+# www.blender.org
+
+newmtl ramp01
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.821000
+illum 9
+map_Kd Z:/WindowsFolders/MyDocs/tron-V/Blender/textures/ramp01.png
+
+newmtl tile01
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.821000
+illum 9
+map_Kd Z:/WindowsFolders/MyDocs/tron-V/Blender/textures/tile01.png
+
+newmtl tile02
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.821000
+illum 9
+map_Kd Z:/WindowsFolders/MyDocs/tron-V/Blender/textures/tile02.png
+
+newmtl tile03
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.821000
+illum 9
+map_Kd Z:/WindowsFolders/MyDocs/tron-V/Blender/textures/tile03.png
