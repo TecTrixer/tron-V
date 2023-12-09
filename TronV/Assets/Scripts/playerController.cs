@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 //using System.Numerics;
 using Unity.VisualScripting;
 
 using UnityEditor;
 using UnityEngine;
 
-public class playerController : MonoBehaviour
+public class playerController : NetworkBehaviour
 {
     // Private Physics Variables
     private Rigidbody rb;
@@ -41,10 +42,11 @@ public class playerController : MonoBehaviour
 
     public float trailScale = 0.1f;
     // Start is called before the first frame update
-    void Start()
+    public override void OnStartLocalPlayer()
     {
         this.movement = Vector2.zero;
         this.rb = this.gameObject.GetComponent<Rigidbody>();
+        this.yAngle = transform.rotation.y;
         // Set Camera 
         Camera.main.transform.SetParent(transform);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
