@@ -100,7 +100,7 @@ public class playerController : MonoBehaviour
         curSpeed = Math.Clamp(curSpeed, minSpeed, curMaxSpeed);
         
         // clamp velocity
-        rb.velocity = transform.forward * curSpeed + new Vector3(0, rb.velocity.y, 0); 
+        rb.velocity = new Vector3(transform.forward.x, 0, transform.forward.z) * curSpeed + new Vector3(0, rb.velocity.y, 0); 
 
         // adjust cam based on speed and lean angle
         float speedPerc = (curSpeed - minSpeed) / (maxSpeed - minSpeed);
