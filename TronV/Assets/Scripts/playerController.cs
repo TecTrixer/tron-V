@@ -42,17 +42,18 @@ public class playerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        trail.transform.SetParent(Trails.transform);
         this.movement = Vector2.zero;
         this.rb = this.gameObject.GetComponent<Rigidbody>();
-        this.trailFilter = this.trail.GetComponent<MeshFilter>();
-        this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
-        this.trailCollider = this.trail.GetComponent<MeshCollider>();
-
         // Set Camera 
         Camera.main.transform.SetParent(transform);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
+        
+        trail.transform.SetParent(Trails.transform);
+        this.trailFilter = this.trail.GetComponent<MeshFilter>();
+        this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
+        this.trailCollider = this.trail.GetComponent<MeshCollider>();
+
         
     }
 
