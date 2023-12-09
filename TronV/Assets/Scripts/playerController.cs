@@ -39,6 +39,8 @@ public class playerController : MonoBehaviour
     public float turnRadMax = 1f;
 
     public float maxLean = 45f;
+
+    public float trailScale = 0.1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,12 +50,32 @@ public class playerController : MonoBehaviour
         Camera.main.transform.SetParent(transform);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
-        
+
+        // Initializing trail handler
         trail.transform.SetParent(Trails.transform);
+        Material tmp = trail.GetComponent<Renderer>().material;
+        tmp.color = new Color(0, 0, 0.5f, 0.5f);
+        trail.GetComponent<Renderer>().material = tmp;
         this.trailFilter = this.trail.GetComponent<MeshFilter>();
         this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
         this.trailCollider = this.trail.GetComponent<MeshCollider>();
 
+        vertices = new List<Vector3>
+        {
+            rb.transform.position - rb.transform.up * trailScale - rb.transform.forward * 0.1f - rb.transform.forward * 0.33f,
+            rb.transform.position + rb.transform.up * trailScale - rb.transform.forward * 0.1f - rb.transform.forward * 0.33f,
+            rb.transform.position - rb.transform.up * trailScale - rb.transform.forward * 0.33f,
+            rb.transform.position + rb.transform.up * trailScale - rb.transform.forward * 0.33f
+        };
+        triangles = new List<int> 
+        {
+            0,1,3,
+            0,3,2,
+            0,3,1,
+            0,2,3,
+        };
+        this.trailFilter.mesh.vertices = vertices.ToArray();
+        this.trailFilter.mesh.triangles = triangles.ToArray();
         
     }
 
@@ -61,7 +83,7 @@ public class playerController : MonoBehaviour
     void Update()
     {
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
-
+        CreateTrail();
     }
 
     // Update physics
@@ -108,5 +130,32 @@ public class playerController : MonoBehaviour
         Camera.main.fieldOfView = Mathf.Lerp(60, 75, speedPerc);
         Camera.main.transform.localRotation = Quaternion.Euler(15 - 10 * speedPerc, 0, 0.75f * zLean);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
+    }
+
+    void CreateTrail() {
+        int index = vertices.Count;
+        vertices.Add(rb.transform.position - rb.transform.up * trailScale - rb.transform.forward * 0.33f);
+        vertices.Add(rb.transform.position + rb.transform.up * trailScale - rb.transform.forward * 0.33f);
+
+        //Front face
+        triangles.Add(index-2);
+        triangles.Add(index-1);
+        triangles.Add(index+1);
+        triangles.Add(index-2);
+        triangles.Add(index+1);
+        triangles.Add(index);
+
+        //Back face
+        triangles.Add(index-2);
+        triangles.Add(index+1);
+        triangles.Add(index-1);
+        triangles.Add(index-2);
+        triangles.Add(index);
+        triangles.Add(index+1);
+
+        trailFilter.mesh.vertices = vertices.ToArray();
+        trailFilter.mesh.triangles = triangles.ToArray();
+
+        trailCollider.sharedMesh = trailFilter.mesh;
     }
 }

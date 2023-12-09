@@ -1,9 +1,49 @@
 fileFormatVersion: 2
-guid: d574960f2ca28466d85e6a834a56f947
+guid: 817b69416dc45460cb85e38fb0cd4da1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ramp01
+    second: {fileID: 2100000, guid: 4efdd1d3bbb6ff2478484284b322ae15, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile01
+    second: {fileID: 2100000, guid: 2a157ec7c18ed714a9d1d4cc2d3c3020, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile01_gnd
+    second: {fileID: 2100000, guid: 27ca0b2198e772f4ab797d105f8fa097, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile02
+    second: {fileID: 2100000, guid: 5dd178c62eeac744298cdaaa6f1563aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile02_gnd
+    second: {fileID: 2100000, guid: bd99a5c1e2ae4d043beca8950927c491, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile03
+    second: {fileID: 2100000, guid: 4b49de6fb343f514b863494c9ad7e679, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile_diag01
+    second: {fileID: 2100000, guid: c79921ff5a9545840ba91ec61fdbd373, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile_diag01_gnd
+    second: {fileID: 2100000, guid: 9f50e80520b8fda4a8cb5472c405534e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
