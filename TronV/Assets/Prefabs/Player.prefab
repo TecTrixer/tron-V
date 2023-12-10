@@ -211,8 +211,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   trail: {fileID: 1202255391596637082}
-  model: {fileID: 2073770218153252262}
   trailSpawn: {fileID: 6543536090914481895}
+  model: {fileID: 2073770218153252262}
   maxSpeed: 5
   defaultSpeed: 0
   minSpeed: -1
@@ -301,7 +301,7 @@ Transform:
   m_GameObject: {fileID: 6543536090914481895}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1308}
+  m_LocalPosition: {x: 0, y: 0, z: -0.147}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -387,4 +387,3 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1154868564860217591}
   m_PrefabAsset: {fileID: 0}
-

@@ -21,7 +21,6 @@ public class playerController : NetworkBehaviour
     private MeshCollider trailCollider;
     private readonly SyncList<Vector3> vertices = new SyncList<Vector3>(){};
     private readonly SyncList<int> triangles = new SyncList<int>(){};
-    [SyncVar(hook = nameof(DrawTrail))] private bool toggle = false;
     private float yAngle = 0f;
     private float zLean = 0f;
     private float curSpeed = 2.25f;
@@ -64,9 +63,11 @@ public class playerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        DrawTrail();
         if (!isLocalPlayer) return;
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
         UpdateTrail();
+
     }
 
     // Update physics
@@ -166,8 +167,6 @@ public class playerController : NetworkBehaviour
         triangles.Add(0);
         triangles.Add(2);
         triangles.Add(3);
-
-        this.toggle = !this.toggle;
     }
 
     // Trail Update
@@ -200,10 +199,9 @@ public class playerController : NetworkBehaviour
         triangles.Add(index-2);
         triangles.Add(index);
         triangles.Add(index+1);
-        this.toggle = !this.toggle;
     }
 
-    void DrawTrail(bool oldValue, bool newValue) {
+    void DrawTrail() {
         trailFilter.mesh.vertices = vertices.ToArray();
         trailFilter.mesh.triangles = triangles.ToArray();
 
