@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 //using System.Numerics;
 using Unity.VisualScripting;
@@ -18,8 +19,9 @@ public class playerController : NetworkBehaviour
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
-    [SyncVar] private List<Vector3> vertices;
-    [SyncVar] private List<int> triangles;
+    [SyncVar] private SyncList<Vector3> vertices;
+    [SyncVar] private SyncList<int> triangles;
+    [SyncVar(hook = nameof(DrawTrail))] private bool toggle;
     private float yAngle = 0f;
     private float zLean = 0f;
     private float curSpeed = 2.25f;
@@ -132,22 +134,21 @@ public class playerController : NetworkBehaviour
         this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
         this.trailCollider = this.trail.GetComponent<MeshCollider>();
 
-        vertices = new List<Vector3>
+        vertices = new SyncList<Vector3>
         {
             trailSpawn.transform.position - model.transform.forward * 0.01f,
             trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f,
             trailSpawn.transform.position,
             trailSpawn.transform.position + model.transform.up * trailScale
         };
-        triangles = new List<int> 
+        triangles = new SyncList<int> 
         {
             0,1,3,
             0,3,2,
             0,3,1,
             0,2,3,
         };
-        this.trailFilter.mesh.vertices = vertices.ToArray();
-        this.trailFilter.mesh.triangles = triangles.ToArray();
+        this.toggle = !this.toggle;
     }
 
     // Trail Update
@@ -180,7 +181,10 @@ public class playerController : NetworkBehaviour
         triangles.Add(index-2);
         triangles.Add(index);
         triangles.Add(index+1);
+        this.toggle = !this.toggle;
+    }
 
+    void DrawTrail() {
         trailFilter.mesh.vertices = vertices.ToArray();
         trailFilter.mesh.triangles = triangles.ToArray();
 
