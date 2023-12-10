@@ -18,8 +18,8 @@ public class playerController : NetworkBehaviour
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
-    private List<Vector3> vertices;
-    private List<int> triangles;
+    [SyncVar] private List<Vector3> vertices;
+    [SyncVar] private List<int> triangles;
     private float yAngle = 0f;
     private float zLean = 0f;
     private float curSpeed = 2.25f;
@@ -115,6 +115,7 @@ public class playerController : NetworkBehaviour
     }
 
     // Trail Initialization
+    [Command]
     void InitTrail() {
         // Reset Trail
         trail.transform.position = Vector3.zero;
@@ -150,6 +151,7 @@ public class playerController : NetworkBehaviour
     }
 
     // Trail Update
+    [Command]
     void UpdateTrail() {
         int index = vertices.Count;
         float scale = (trailScaleDistance - trailScale)/(trailDiag-1);
