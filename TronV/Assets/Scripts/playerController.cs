@@ -46,6 +46,11 @@ public class playerController : NetworkBehaviour
     public float trailScaleDistance = 0.2f;
     public int trailDiag = 10;
     // Start is called before the first frame update
+    void Start() {
+        // Setup Trail
+        InitTrail();
+    }
+    
     public override void OnStartLocalPlayer()
     {
         this.movement = Vector2.zero;
@@ -55,9 +60,6 @@ public class playerController : NetworkBehaviour
         Camera.main.transform.SetParent(transform);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
-
-        // Setup Trail
-        InitTrail();
     }
 
     // Update is called once per frame
@@ -118,7 +120,6 @@ public class playerController : NetworkBehaviour
     }
 
     // Trail Initialization
-    [Command]
     void InitTrail() {
         // Reset Trail
         trail.transform.position = Vector3.zero;
@@ -135,6 +136,7 @@ public class playerController : NetworkBehaviour
         this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
         this.trailCollider = this.trail.GetComponent<MeshCollider>();
 
+        InitMesh();
         /*
         vertices = new SyncList<Vector3>
         {
@@ -151,6 +153,11 @@ public class playerController : NetworkBehaviour
             0,2,3,
         };
         */
+        
+    }
+
+    [Command]
+    void InitMesh() {
         vertices.Add(trailSpawn.transform.position - model.transform.forward * 0.01f);
         vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f);
         vertices.Add(trailSpawn.transform.position);
