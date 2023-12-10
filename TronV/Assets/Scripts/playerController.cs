@@ -19,8 +19,8 @@ public class playerController : NetworkBehaviour
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
-    [SyncVar] private SyncList<Vector3> vertices = new SyncList<Vector3>(){};
-    [SyncVar] private SyncList<int> triangles = new SyncList<int>(){};
+    private readonly SyncList<Vector3> vertices = new SyncList<Vector3>(){};
+    private readonly SyncList<int> triangles = new SyncList<int>(){};
     [SyncVar(hook = nameof(DrawTrail))] private bool toggle = false;
     private float yAngle = 0f;
     private float zLean = 0f;
@@ -134,6 +134,7 @@ public class playerController : NetworkBehaviour
         this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
         this.trailCollider = this.trail.GetComponent<MeshCollider>();
 
+        /*
         vertices = new SyncList<Vector3>
         {
             trailSpawn.transform.position - model.transform.forward * 0.01f,
@@ -148,6 +149,24 @@ public class playerController : NetworkBehaviour
             0,3,1,
             0,2,3,
         };
+        */
+        vertices.Add(trailSpawn.transform.position - model.transform.forward * 0.01f);
+        vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f);
+        vertices.Add(trailSpawn.transform.position);
+        vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale);
+        triangles.Add(0);
+        triangles.Add(1);
+        triangles.Add(3);
+        triangles.Add(0);
+        triangles.Add(3);
+        triangles.Add(2);
+        triangles.Add(0);
+        triangles.Add(3);
+        triangles.Add(1);
+        triangles.Add(0);
+        triangles.Add(2);
+        triangles.Add(3);
+
         this.toggle = !this.toggle;
     }
 
