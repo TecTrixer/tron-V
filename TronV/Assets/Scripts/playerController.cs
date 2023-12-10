@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Mirror;
 //using System.Numerics;
 using Unity.VisualScripting;
 
 using UnityEditor;
 using UnityEngine;
 
-public class playerController : MonoBehaviour
+public class playerController : NetworkBehaviour
 {
     // Private Physics Variables
     private Rigidbody rb;
@@ -17,15 +19,17 @@ public class playerController : MonoBehaviour
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
-    private List<Vector3> vertices;
-    private List<int> triangles;
+    //private readonly SyncList<Vector3> vertices = new SyncList<Vector3>(){};
+    //private readonly SyncList<int> triangles = new SyncList<int>(){};
+    private List<Vector3> vertices = new List<Vector3>(){};
+    private List<int> triangles = new List<int>(){};
     private float yAngle = 0f;
     private float zLean = 0f;
     private float curSpeed = 2.25f;
 
     // Public refrences
     public GameObject trail;
-    public GameObject Trails;
+    public GameObject trailSpawn;
     public GameObject model;
 
     // Public tune variables
@@ -39,33 +43,40 @@ public class playerController : MonoBehaviour
     public float turnRadMax = 1f;
 
     public float maxLean = 45f;
+
+    public float trailScale = 0.1f;
+    public float trailScaleDistance = 0.2f;
+    public int trailDiag = 10;
     // Start is called before the first frame update
-    void Start()
+    void Start() {
+        // Setup Trail
+        InitTrail();
+    }
+    
+    public override void OnStartLocalPlayer()
     {
-        trail.transform.SetParent(Trails.transform);
         this.movement = Vector2.zero;
         this.rb = this.gameObject.GetComponent<Rigidbody>();
-        this.trailFilter = this.trail.GetComponent<MeshFilter>();
-        this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
-        this.trailCollider = this.trail.GetComponent<MeshCollider>();
-
+        this.yAngle = transform.rotation.y;
         // Set Camera 
         Camera.main.transform.SetParent(transform);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
-        
     }
 
     // Update is called once per frame
     void Update()
     {
+        //DrawTrail();
+        UpdateTrail();
+        if (!isLocalPlayer) return;
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
-
     }
 
     // Update physics
     void FixedUpdate()
     {
+        if (!isLocalPlayer) return;
         // Handle lean
         zLean = Math.Clamp(zLean + 3f * movement[1], -maxLean, maxLean);
         if (movement[1] == 0 && zLean != 0) {
@@ -107,5 +118,87 @@ public class playerController : MonoBehaviour
         Camera.main.fieldOfView = Mathf.Lerp(60, 75, speedPerc);
         Camera.main.transform.localRotation = Quaternion.Euler(15 - 10 * speedPerc, 0, 0.75f * zLean);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
+    }
+
+    // Trail Initialization
+    void InitTrail() {
+        // Reset Trail
+        trail.transform.position = Vector3.zero;
+        trail.transform.rotation = Quaternion.identity;
+
+        // Set Parent
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("trailContainer")) trail.transform.SetParent(go.transform);
+
+        // Get Material
+        Material tmp = trail.GetComponent<Renderer>().material;
+        tmp.color = new Color(0, 0, 0.5f, 0.2f);
+        trail.GetComponent<Renderer>().material = tmp;
+        this.trailFilter = this.trail.GetComponent<MeshFilter>();
+        this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
+        this.trailCollider = this.trail.GetComponent<MeshCollider>();
+
+        InitMesh();
+    }
+
+    //[Command]
+    void InitMesh() {
+        vertices.Add(trailSpawn.transform.position - model.transform.forward * 0.01f);
+        vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f);
+        vertices.Add(trailSpawn.transform.position);
+        vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale);
+        triangles.Add(0);
+        triangles.Add(1);
+        triangles.Add(3);
+        triangles.Add(0);
+        triangles.Add(3);
+        triangles.Add(2);
+        triangles.Add(0);
+        triangles.Add(3);
+        triangles.Add(1);
+        triangles.Add(0);
+        triangles.Add(2);
+        triangles.Add(3);
+        this.DrawTrail();
+    }
+
+    // Trail Update
+    //[Command]
+    void UpdateTrail() {
+        int index = vertices.Count;
+        float scale = (trailScaleDistance - trailScale)/(trailDiag-1);
+        for (int i = 0; i < Math.Min(trailDiag, index/2); i++) {
+            int indexGnd = index - 2 - 2*i;
+            int indexAir = index - 1 - 2*i;
+            vertices[indexAir] += Vector3.Normalize(vertices[indexAir] - vertices[indexGnd]) * scale;
+        }
+
+
+        vertices.Add(trailSpawn.transform.position);
+        vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale);
+
+        //Front face
+        triangles.Add(index-2);
+        triangles.Add(index-1);
+        triangles.Add(index+1);
+        triangles.Add(index-2);
+        triangles.Add(index+1);
+        triangles.Add(index);
+
+        //Back face
+        triangles.Add(index-2);
+        triangles.Add(index+1);
+        triangles.Add(index-1);
+        triangles.Add(index-2);
+        triangles.Add(index);
+        triangles.Add(index+1);
+
+        this.DrawTrail();
+    }
+
+    void DrawTrail() {
+        trailFilter.mesh.vertices = vertices.ToArray();
+        trailFilter.mesh.triangles = triangles.ToArray();
+
+        trailCollider.sharedMesh = trailFilter.mesh;
     }
 }
