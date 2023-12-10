@@ -27,6 +27,7 @@ public class playerController : NetworkBehaviour
     // Public refrences
     public GameObject trail;
     public GameObject model;
+    public GameObject trailSpawn;
 
     // Public tune variables
     public float maxSpeed = 5;
@@ -41,6 +42,8 @@ public class playerController : NetworkBehaviour
     public float maxLean = 45f;
 
     public float trailScale = 0.1f;
+    public float trailScaleDistance = 0.2f;
+    public int trailDiag = 10;
     // Start is called before the first frame update
     public override void OnStartLocalPlayer()
     {
@@ -52,32 +55,8 @@ public class playerController : NetworkBehaviour
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
 
-        // Initializing trail handler
-        foreach (GameObject go in GameObject.FindGameObjectsWithTag("trailContainer")) trail.transform.SetParent(go.transform);
-        Material tmp = trail.GetComponent<Renderer>().material;
-        tmp.color = new Color(0, 0, 0.5f, 0.5f);
-        trail.GetComponent<Renderer>().material = tmp;
-        this.trailFilter = this.trail.GetComponent<MeshFilter>();
-        this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
-        this.trailCollider = this.trail.GetComponent<MeshCollider>();
-
-        vertices = new List<Vector3>
-        {
-            rb.transform.position - rb.transform.up * trailScale - rb.transform.forward * 0.1f - rb.transform.forward * 0.33f,
-            rb.transform.position + rb.transform.up * trailScale - rb.transform.forward * 0.1f - rb.transform.forward * 0.33f,
-            rb.transform.position - rb.transform.up * trailScale - rb.transform.forward * 0.33f,
-            rb.transform.position + rb.transform.up * trailScale - rb.transform.forward * 0.33f
-        };
-        triangles = new List<int> 
-        {
-            0,1,3,
-            0,3,2,
-            0,3,1,
-            0,2,3,
-        };
-        this.trailFilter.mesh.vertices = vertices.ToArray();
-        this.trailFilter.mesh.triangles = triangles.ToArray();
-        
+        // Initialize Trails
+        InitTrail();
     }
 
     // Update is called once per frame
@@ -85,7 +64,7 @@ public class playerController : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
-        CreateTrail();
+        UpdateTrail();
     }
 
     // Update physics
@@ -135,10 +114,52 @@ public class playerController : NetworkBehaviour
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
     }
 
-    void CreateTrail() {
+    void InitTrail() {
+        // Reset Trail
+        trail.transform.position = Vector3.zero;
+        trail.transform.rotation = Quaternion.identity;
+
+        // Set Parent
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("trailContainer")) trail.transform.SetParent(go.transform);
+
+        // Get Material
+        Material tmp = trail.GetComponent<Renderer>().material;
+        tmp.color = new Color(0, 0, 0.5f, 0.2f);
+        trail.GetComponent<Renderer>().material = tmp;
+        this.trailFilter = this.trail.GetComponent<MeshFilter>();
+        this.trailRenderer = this.trail.GetComponent<MeshRenderer>();
+        this.trailCollider = this.trail.GetComponent<MeshCollider>();
+
+        vertices = new List<Vector3>
+        {
+            trailSpawn.transform.position - model.transform.forward * 0.01f,
+            trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f,
+            trailSpawn.transform.position,
+            trailSpawn.transform.position + model.transform.up * trailScale
+        };
+        triangles = new List<int> 
+        {
+            0,1,3,
+            0,3,2,
+            0,3,1,
+            0,2,3,
+        };
+        this.trailFilter.mesh.vertices = vertices.ToArray();
+        this.trailFilter.mesh.triangles = triangles.ToArray();
+    }
+
+    void UpdateTrail() {
         int index = vertices.Count;
-        vertices.Add(rb.transform.position - rb.transform.up * trailScale - rb.transform.forward * 0.33f);
-        vertices.Add(rb.transform.position + rb.transform.up * trailScale - rb.transform.forward * 0.33f);
+        float scale = (trailScaleDistance - trailScale)/(trailDiag-1);
+        for (int i = 0; i < Math.Min(trailDiag, index/2); i++) {
+            int indexGnd = index - 2 - 2*i;
+            int indexAir = index - 1 - 2*i;
+            vertices[indexAir] += Vector3.Normalize(vertices[indexAir] - vertices[indexGnd]) * scale;
+        }
+
+
+        vertices.Add(trailSpawn.transform.position);
+        vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale);
 
         //Front face
         triangles.Add(index-2);
