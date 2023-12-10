@@ -14,6 +14,8 @@ public class reformatController : MonoBehaviour
     private Vector2 movement;
     private Vector3 velocity;
     private float lean;
+
+    // Trail Containers
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
@@ -40,9 +42,11 @@ public class reformatController : MonoBehaviour
 
     public float maxLean = 45f;
 
+    // Trail Vars
     public float trailScale = 0.1f;
     public float trailScaleDistance = 0.2f;
-    public int trailDiag = 5;
+    public int trailDiag = 10;
+
     // Start is called before the first frame update
     void Start()
     {
