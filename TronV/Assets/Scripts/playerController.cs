@@ -19,8 +19,10 @@ public class playerController : NetworkBehaviour
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
-    private readonly SyncList<Vector3> vertices = new SyncList<Vector3>(){};
-    private readonly SyncList<int> triangles = new SyncList<int>(){};
+    //private readonly SyncList<Vector3> vertices = new SyncList<Vector3>(){};
+    //private readonly SyncList<int> triangles = new SyncList<int>(){};
+    private List<Vector3> vertices = new List<Vector3>(){};
+    private List<int> triangles = new List<int>(){};
     private float yAngle = 0f;
     private float zLean = 0f;
     private float curSpeed = 2.25f;
@@ -65,11 +67,10 @@ public class playerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        DrawTrail();
+        //DrawTrail();
+        UpdateTrail();
         if (!isLocalPlayer) return;
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
-        UpdateTrail();
-
     }
 
     // Update physics
@@ -137,26 +138,9 @@ public class playerController : NetworkBehaviour
         this.trailCollider = this.trail.GetComponent<MeshCollider>();
 
         InitMesh();
-        /*
-        vertices = new SyncList<Vector3>
-        {
-            trailSpawn.transform.position - model.transform.forward * 0.01f,
-            trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f,
-            trailSpawn.transform.position,
-            trailSpawn.transform.position + model.transform.up * trailScale
-        };
-        triangles = new SyncList<int> 
-        {
-            0,1,3,
-            0,3,2,
-            0,3,1,
-            0,2,3,
-        };
-        */
-        
     }
 
-    [Command]
+    //[Command]
     void InitMesh() {
         vertices.Add(trailSpawn.transform.position - model.transform.forward * 0.01f);
         vertices.Add(trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f);
@@ -174,10 +158,11 @@ public class playerController : NetworkBehaviour
         triangles.Add(0);
         triangles.Add(2);
         triangles.Add(3);
+        this.DrawTrail();
     }
 
     // Trail Update
-    [Command]
+    //[Command]
     void UpdateTrail() {
         int index = vertices.Count;
         float scale = (trailScaleDistance - trailScale)/(trailDiag-1);
@@ -206,6 +191,8 @@ public class playerController : NetworkBehaviour
         triangles.Add(index-2);
         triangles.Add(index);
         triangles.Add(index+1);
+
+        this.DrawTrail();
     }
 
     void DrawTrail() {
