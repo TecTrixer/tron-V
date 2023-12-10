@@ -19,9 +19,9 @@ public class playerController : NetworkBehaviour
     private MeshFilter trailFilter;
     private MeshRenderer trailRenderer;
     private MeshCollider trailCollider;
-    [SyncVar] private SyncList<Vector3> vertices;
-    [SyncVar] private SyncList<int> triangles;
-    [SyncVar(hook = nameof(DrawTrail))] private bool toggle;
+    [SyncVar] private SyncList<Vector3> vertices = new SyncList<Vector3>(){};
+    [SyncVar] private SyncList<int> triangles = new SyncList<int>(){};
+    [SyncVar(hook = nameof(DrawTrail))] private bool toggle = false;
     private float yAngle = 0f;
     private float zLean = 0f;
     private float curSpeed = 2.25f;
@@ -184,7 +184,7 @@ public class playerController : NetworkBehaviour
         this.toggle = !this.toggle;
     }
 
-    void DrawTrail() {
+    void DrawTrail(bool oldValue, bool newValue) {
         trailFilter.mesh.vertices = vertices.ToArray();
         trailFilter.mesh.triangles = triangles.ToArray();
 
