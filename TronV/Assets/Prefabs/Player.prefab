@@ -136,16 +136,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4456612998054811228}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.29237175, z: 0, w: 0.9563048}
   m_LocalPosition: {x: 0, y: 0.168, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1696823150102138652}
   - {fileID: 4633171257107202881}
-  - {fileID: 5103569282296666077}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 34, z: 0}
 --- !u!136 &339782990177308904
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -208,12 +207,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44fb045760b6545afac1586ca2e97369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   trail: {fileID: 1202255391596637082}
   model: {fileID: 2073770218153252262}
-  trailSpawn: {fileID: 6543536090914481895}
   maxSpeed: 5
   defaultSpeed: 0
   minSpeed: -1
@@ -223,8 +218,6 @@ MonoBehaviour:
   turnRadMax: 1
   maxLean: 45
   trailScale: 0.1
-  trailScaleDistance: 0.2
-  trailDiag: 10
 --- !u!114 &6488519783951186397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +271,7 @@ MonoBehaviour:
   visible: 0
   hasSpawned: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &6543536090914481895
 GameObject:
 =======
@@ -328,6 +322,8 @@ Transform:
   readyToBegin: 1
   index: 0
 >>>>>>> 3e89c402f9beb2d43bc523402620ffbf784fc117
+=======
+>>>>>>> parent of 0a50bbb... trail Spawn
 --- !u!1001 &1154868564860217591
 PrefabInstance:
   m_ObjectHideFlags: 0
