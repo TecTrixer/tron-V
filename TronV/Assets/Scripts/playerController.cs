@@ -62,6 +62,7 @@ public class playerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isLocalPlayer) return;
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
         UpdateTrail();
     }
@@ -69,6 +70,7 @@ public class playerController : NetworkBehaviour
     // Update physics
     void FixedUpdate()
     {
+        if (!isLocalPlayer) return;
         // Handle lean
         zLean = Math.Clamp(zLean + 3f * movement[1], -maxLean, maxLean);
         if (movement[1] == 0 && zLean != 0) {
