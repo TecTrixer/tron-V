@@ -51,8 +51,8 @@ public class playerController : NetworkBehaviour
     private Color playerColor = new Color();
     [SyncVar(hook = nameof(OnNameChange))]
     private string playerName = "Anonymous";
-    //public TextMeshPro nameTextMesh;
-    //public GameObject nameContainer;
+    public TextMeshPro nameTextMesh;
+    public GameObject nameContainer;
     public GameObject emissivePolygon; // Used to set player color;
 
     // Public tune variables
