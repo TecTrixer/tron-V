@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerController : NetworkBehaviour
 {
@@ -41,11 +42,11 @@ public class playerController : NetworkBehaviour
     // Player Prefab references
     public GameObject model;
     [SyncVar(hook = nameof(OnColorChange))]
-    public Color playerColor = new(1,0.9412f,0);
+    private Color playerColor;
     [SyncVar(hook = nameof(OnNameChange))]
-    public string playerName;
-    public TextMeshPro nameTextMesh;
-    public GameObject nameContainer;
+    private string playerName;
+    //public TextMeshPro nameTextMesh;
+    //public GameObject nameContainer;
     public GameObject emissivePolygon; // Used to set player color;
 
     // Public tune variables
@@ -85,6 +86,14 @@ public class playerController : NetworkBehaviour
         Camera.main.transform.SetParent(transform);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
+        InitLocalPlayer();
+    }
+
+    [Command]
+    void InitLocalPlayer() {
+        // Set Player Colour
+        this.playerColor = startScreenController.playerColor;
+        this.playerName = startScreenController.playerName;
     }
 
     // Update is called once per frame
@@ -92,7 +101,7 @@ public class playerController : NetworkBehaviour
     {
         DrawTrail();
         if (!isLocalPlayer) {
-            nameContainer.transform.LookAt(Camera.main.transform);
+            //nameContainer.transform.LookAt(Camera.main.transform);
             return;
         }
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
@@ -157,18 +166,19 @@ public class playerController : NetworkBehaviour
     }
 
     void OnColorChange(Color _Old, Color _New) {
-        nameTextMesh.color = _New;
+        //nameTextMesh.color = _New;
         SetPlayerColor();
         SetTrailColor();
     }
 
     void OnNameChange(string _Old, string _New) {
-        this.nameTextMesh.text = _New;
+        //this.nameTextMesh.text = _New;
     }
 
     // Game Logic Functions
     void KillPlayer() {
         // Kill Player
+        SceneManager.LoadScene("startScreen");
     }
 
 
@@ -212,8 +222,8 @@ public class playerController : NetworkBehaviour
         // Set Trail Color
         mat.color = new Color(playerColor.r, playerColor.g, playerColor.b, trailTransparency);
         trail.GetComponent<Renderer>().material = mat;
-        trailEmL.GetComponent<Renderer>().material.SetColor("_EmissiveColor", playerColor);
-        trailEmU.GetComponent<Renderer>().material.SetColor("_EmissiveColor", playerColor);
+        trailEmL.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerColor);
+        trailEmU.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerColor);
     }
 
     [Command]
@@ -332,9 +342,9 @@ public class playerController : NetworkBehaviour
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("trail")) {
+        /*if (collision.gameObject.CompareTag("trail")) {
             this.isAlive = false;
             this.KillPlayer();
-        }
+        }*/
     }
 }
