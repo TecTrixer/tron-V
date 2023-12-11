@@ -3,7 +3,47 @@ guid: 03ca70bb48c474a46b7a71985058c628
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ramp01
+    second: {fileID: 2100000, guid: d7459bc030426b1489783ec7336f7619, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile01
+    second: {fileID: 2100000, guid: b815be694b7650a4690f3696c2c112fe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile01_gnd
+    second: {fileID: 2100000, guid: 990f085abe541c64a8ce1318941de44c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile02
+    second: {fileID: 2100000, guid: 02fd8e8716ba43f429eaa86f6261d3bd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile02_gnd
+    second: {fileID: 2100000, guid: 6f88449967e7a4246b4607fddc2ed2c8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile03
+    second: {fileID: 2100000, guid: 5574e5eeed578cc449e7ba845b68ffed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile_diag01
+    second: {fileID: 2100000, guid: 1699107287f52064cb5e9b1bd10688b3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tile_diag01_gnd
+    second: {fileID: 2100000, guid: 18c6f6feec8ce9243be3ced25cbb67d5, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -37,7 +77,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     importPhysicalCameras: 1
