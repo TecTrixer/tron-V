@@ -317,7 +317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0
+  syncInterval: 0.1
   trailEmL: {fileID: 370868373269563125}
   trail: {fileID: 1202255391596637082}
   trailEmU: {fileID: 7373612444456682883}
