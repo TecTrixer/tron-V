@@ -54,13 +54,17 @@ public class playerControllerWheels : NetworkBehaviour
     public GameObject nameContainer;
     public GameObject emissivePolygon; // Used to set player color;
 
-    // Public tune variables
+    // Game Physics
     public float maxSpeed = 5;
     public float defaultSpeed = 4f;
     public float minSpeed = 3f;
-    public float turnAngle = 10f;
 
     public float maxLean = 45f;
+    public float leanInSpeed = 4f;
+    public float leanOutSpeed = 3f;
+    public float leanToTurn = 1f;
+    public float turnSlowDown = 0.2f;
+    private float curLean = 0f;
 
     // Trail Tune Variables
     public float trailScale = 0.1f;
@@ -116,19 +120,43 @@ public class playerControllerWheels : NetworkBehaviour
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
-        float torque = defaultSpeed * movement[0];
-        wFrontL.motorTorque = torque;
-        wFrontR.motorTorque = torque;
-        wBackL.motorTorque = torque;
-        wBackR.motorTorque = torque;
+        DrivePhysics();
+    }
 
-        wFrontL.steerAngle = turnAngle * movement[1];
-        wFrontR.steerAngle = turnAngle * movement[1];
+    void DrivePhysics() {
+        // Handling lean and turn
+        if (movement[1] == 0) {
+            if (Math.Abs(curLean) < leanOutSpeed) {
+                curLean = 0.0f;
+            } else {
+                curLean -= Math.Sign(curLean) * leanOutSpeed;
+            }
+        } else {
+            curLean += movement[1] * leanInSpeed;
+        }
+        curLean = Math.Clamp(curLean, -maxLean, maxLean);
 
-        /*
+        wFrontL.steerAngle = leanToTurn * curLean;
+        wFrontR.steerAngle = leanToTurn * curLean;
+
+        // Handling forward speed
+        float curMaxSpeed = maxSpeed * (1.0f - turnSlowDown * Math.Abs(curLean) / maxLean);
+        float speed = defaultSpeed;
+        if (movement[0] < 0.0f) {
+            speed = Mathf.Lerp(minSpeed, defaultSpeed, movement[0] + 1.0f);
+        } else if (movement[0] > 0.0f) {
+            speed = Mathf.Lerp(defaultSpeed, curMaxSpeed, movement[0]);
+        }
+        wFrontL.motorTorque = speed;
+        wFrontR.motorTorque = speed;
+        wBackL.motorTorque = speed;
+        wBackR.motorTorque = speed;
+        float speedPerc = (speed - minSpeed) / (maxSpeed - minSpeed);
+
+        model.transform.localRotation = Quaternion.Euler(0, 0, -curLean);
         Camera.main.fieldOfView = Mathf.Lerp(60, 75, speedPerc);
-        Camera.main.transform.localRotation = Quaternion.Euler(15 - 10 * speedPerc, 0, 0.75f * zLean);
-        Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);*/
+        Camera.main.transform.localRotation = Quaternion.Euler(15 - 10 * speedPerc, 0, -0.25f * curLean);
+        Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
     }
 
     // Initialize Player
