@@ -20,6 +20,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Private Physics Variables
     private Rigidbody rb;
     private Vector2 movement;
+    private Vector3 movementSpectator;
     private Vector3 velocity;
     public WheelCollider wFrontL;
     public WheelCollider wFrontR;
@@ -37,6 +38,10 @@ public class playerControllerWheels : NetworkBehaviour
     private readonly SyncList<int> triangles1 = new SyncList<int>(){};
     private readonly SyncList<int> triangles2 = new SyncList<int>(){};
 
+    // Public Tune Variables Spectator
+    public float spectatorSpeed = 0.1f;
+    public float spectatorAng = 70f;
+    
     // Public refrences for Trail
     public GameObject trailEmL;   // Lower emissive Trail
     public GameObject trail;
@@ -109,6 +114,7 @@ public class playerControllerWheels : NetworkBehaviour
             return;
         }
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
+        this.movementSpectator = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), -1* Input.GetAxis("Fire3") + Input.GetAxis("Jump"));
         UpdateTrail();
     }
 
@@ -131,6 +137,12 @@ public class playerControllerWheels : NetworkBehaviour
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);*/
     }
 
+
+    void SpectatorPhysics() {
+        
+        transform.Rotate(0, movementSpectator[0]*spectatorAng, 0);
+        transform.Translate(0, movementSpectator[1]*spectatorSpeed, movementSpectator[2]*spectatorSpeed);
+    }
     // Initialize Player
     void InitPlayer()
     {
