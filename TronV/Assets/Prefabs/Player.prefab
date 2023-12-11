@@ -501,8 +501,8 @@ MonoBehaviour:
   nameContainer: {fileID: 7263278585378624010}
   emissivePolygon: {fileID: 7287915569022878041}
   maxSpeed: 5
-  defaultSpeed: 0
-  minSpeed: -1
+  defaultSpeed: 4
+  minSpeed: 3
   linAcc: 25
   linDec: 40
   turnRad: 0.1
