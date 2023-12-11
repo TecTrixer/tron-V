@@ -15,7 +15,8 @@ public class playerController : NetworkBehaviour
 {
     // Private Game Logic Variables
     private bool isAlive = true;
-
+    private bool trailActive = true;
+    
     // Private Physics Variables
     private Rigidbody rb;
     private Vector2 movement;
@@ -29,14 +30,12 @@ public class playerController : NetworkBehaviour
     private MeshFilter[] trailFilter = new MeshFilter[3];
     private MeshRenderer[] trailRenderer = new MeshRenderer[3];
     private MeshCollider[] trailCollider = new MeshCollider[3];
-    // private readonly SyncList<Vector3> vertices0 = new SyncList<Vector3>(){};
-    // private readonly SyncList<Vector3> vertices1 = new SyncList<Vector3>(){};
-    // private readonly SyncList<Vector3> vertices2 = new SyncList<Vector3>(){};
-    // private readonly SyncList<Vector3>[] vertices = new SyncList<Vector3>[] { new SyncList<Vector3>() { }, new SyncList<Vector3>() { }, new SyncList<Vector3>() { } };
-    // private readonly SyncList<int> triangles0 = new SyncList<int>(){};
-    // private readonly SyncList<int> triangles1 = new SyncList<int>(){};
-    // private readonly SyncList<int> triangles2 = new SyncList<int>(){};
-    // private readonly SyncList<int>[] triangles = new SyncList<int>[] { new SyncList<int>() { }, new SyncList<int>() { }, new SyncList<int>() { } };
+    private readonly SyncList<Vector3> vertices0 = new SyncList<Vector3>(){};
+    private readonly SyncList<Vector3> vertices1 = new SyncList<Vector3>(){};
+    private readonly SyncList<Vector3> vertices2 = new SyncList<Vector3>(){};
+    private readonly SyncList<int> triangles0 = new SyncList<int>(){};
+    private readonly SyncList<int> triangles1 = new SyncList<int>(){};
+    private readonly SyncList<int> triangles2 = new SyncList<int>(){};
 
     // Public refrences for Trail
     public GameObject trailEmL;   // Lower emissive Trail
@@ -107,14 +106,14 @@ public class playerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        // DrawTrail();
+        DrawTrail();
         if (!isLocalPlayer)
         {
             nameContainer.transform.LookAt(Camera.main.transform);
             return;
         }
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
-        // UpdateTrail();
+        UpdateTrail();
     }
 
     // Update physics
@@ -189,7 +188,7 @@ public class playerController : NetworkBehaviour
     {
         nameTextMesh.color = _New;
         SetPlayerColor();
-        // SetTrailColor();
+        SetTrailColor();
     }
 
     void OnNameChange(string _Old, string _New)
@@ -248,7 +247,7 @@ public class playerController : NetworkBehaviour
     void SetTrailColor()
     {
         // Get Material
-        Material mat = trail.GetComponent<Renderer>().material;
+        Material mat = new Material(trail.GetComponent<Renderer>().material);
 
         // Set Trail Color
         mat.color = new Color(playerColor.r, playerColor.g, playerColor.b, trailTransparency);
@@ -260,118 +259,115 @@ public class playerController : NetworkBehaviour
     [Command]
     void InitMesh()
     {
-        // // Initialize individual meshes
-        // // Create Vertices lower emissive
-        // vertices[0].Add(trailSpawn.transform.position - model.transform.forward * 0.01f);
-        // vertices[0].Add(trailSpawn.transform.position + model.transform.up * trailGlowScale - model.transform.forward * 0.01f);
-        // vertices[0].Add(trailSpawn.transform.position);
-        // vertices[0].Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
+        // Initialize individual meshes
+        // Create Vertices lower emissive
+        vertices0.Add(trailSpawn.transform.position - model.transform.forward * 0.01f);
+        vertices0.Add(trailSpawn.transform.position + model.transform.up * trailGlowScale - model.transform.forward * 0.01f);
+        vertices0.Add(trailSpawn.transform.position);
+        vertices0.Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
 
-        // // Create Vertices central transparent 
-        // vertices[1].Add(trailSpawn.transform.position + model.transform.up * trailGlowScale - model.transform.forward * 0.01f);
-        // vertices[1].Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale) - model.transform.forward * 0.01f);
-        // vertices[1].Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
-        // vertices[1].Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
-        // // Create Vertices upper emissive       
-        // vertices[2].Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale) - model.transform.forward * 0.01f);
-        // vertices[2].Add(trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f);
-        // vertices[2].Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
-        // vertices[2].Add(trailSpawn.transform.position + model.transform.up * trailScale);
+        // Create Vertices central transparent 
+        vertices1.Add(trailSpawn.transform.position + model.transform.up * trailGlowScale - model.transform.forward * 0.01f);
+        vertices1.Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale) - model.transform.forward * 0.01f);
+        vertices1.Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
+        vertices1.Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
+        // Create Vertices upper emissive       
+        vertices2.Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale) - model.transform.forward * 0.01f);
+        vertices2.Add(trailSpawn.transform.position + model.transform.up * trailScale - model.transform.forward * 0.01f);
+        vertices2.Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
+        vertices2.Add(trailSpawn.transform.position + model.transform.up * trailScale);
 
-        // // Create initial triangles
-        // for (int i = 0; i < trails.Length; i++) {
-        //     triangles[i].Add(0);
-        //     triangles[i].Add(1);
-        //     triangles[i].Add(3);
-        //     triangles[i].Add(0);
-        //     triangles[i].Add(3);
-        //     triangles[i].Add(2);
-        //     triangles[i].Add(0);
-        //     triangles[i].Add(3);
-        //     triangles[i].Add(1);
-        //     triangles[i].Add(0);
-        //     triangles[i].Add(2);
-        //     triangles[i].Add(3);
-        // }
+        // Create initial triangles
+        int[] indices = {
+            0,1,3,
+            0,3,2,
+            0,3,1,
+            0,2,3,
+        };
+
+        foreach (int i in indices) {
+            triangles0.Add(i);
+            triangles1.Add(i);
+            triangles2.Add(i);
+        }
     }
 
     // Update Trail Lists
     [Command]
     void UpdateTrail()
     {
-        // // Current index
-        // int index = vertices[0].Count;
+        // Current index
+        int index = vertices0.Count;
 
-        // // Scale Back Vertices
-        // float scale = (trailScaleDistance - trailScale) / (trailDiag - 1);
-        // for (int i = 0; i < Math.Min(trailDiag, index / 2); i++)
-        // {
-        //     int indexGnd = index - 2 - 2 * i;
-        //     int indexAir = index - 1 - 2 * i;
-        //     // Center Transparent Trail
-        //     vertices[1][indexAir] += Vector3.Normalize(vertices[1][indexAir] - vertices[1][indexGnd]) * scale;
-        //     // Upper Emissive Trail
-        //     vertices[2][indexGnd] += Vector3.Normalize(vertices[1][indexAir] - vertices[1][indexGnd]) * scale;
-        //     vertices[2][indexAir] += Vector3.Normalize(vertices[1][indexAir] - vertices[1][indexGnd]) * scale;
-        // }
+        // Scale Back Vertices
+        float scale = (trailScaleDistance - trailScale) / (trailDiag - 1);
+        for (int i = 0; i < Math.Min(trailDiag, index / 2); i++)
+        {
+            int indexGnd = index - 2 - 2 * i;
+            int indexAir = index - 1 - 2 * i;
+            // Center Transparent Trail
+            vertices1[indexAir] += Vector3.Normalize(vertices1[indexAir] - vertices1[indexGnd]) * scale;
+            // Upper Emissive Trail
+            vertices2[indexGnd] += Vector3.Normalize(vertices1[indexAir] - vertices1[indexGnd]) * scale;
+            vertices2[indexAir] += Vector3.Normalize(vertices1[indexAir] - vertices1[indexGnd]) * scale;
+        }
 
-        // // Add new Vertices
-        // // Lower Emissive Trail
-        // vertices[0].Add(trailSpawn.transform.position);
-        // vertices[0].Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
-        // // Center Transparent Trail
-        // vertices[1].Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
-        // vertices[1].Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
-        // // Upper Emissive Trail
-        // vertices[2].Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
-        // vertices[2].Add(trailSpawn.transform.position + model.transform.up * trailScale);
+        // Add new Vertices
+        // Lower Emissive Trail
+        vertices0.Add(trailSpawn.transform.position);
+        vertices0.Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
+        // Center Transparent Trail
+        vertices1.Add(trailSpawn.transform.position + model.transform.up * trailGlowScale);
+        vertices1.Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
+        // Upper Emissive Trail
+        vertices2.Add(trailSpawn.transform.position + model.transform.up * (trailScale - trailGlowScale));
+        vertices2.Add(trailSpawn.transform.position + model.transform.up * trailScale);
 
-        // // Add new Triangles
-        // for (int i = 0; i < trails.Length; i++)
-        // {
-        //     //Front face
-        //     triangles[i].Add(index - 2);
-        //     triangles[i].Add(index - 1);
-        //     triangles[i].Add(index + 1);
-        //     triangles[i].Add(index - 2);
-        //     triangles[i].Add(index + 1);
-        //     triangles[i].Add(index);
+        int[] indices = {
+            // Front face
+            index-2, index-1, index+1,
+            index-2, index+1, index,
+            // Back face
+            index-2, index+1, index-1,
+            index-2, index, index+1
+        };
 
-        //     //Back face
-        //     triangles[i].Add(index - 2);
-        //     triangles[i].Add(index + 1);
-        //     triangles[i].Add(index - 1);
-        //     triangles[i].Add(index - 2);
-        //     triangles[i].Add(index);
-        //     triangles[i].Add(index + 1);
-        // }
+        // Add new Triangles
+        foreach (int i in indices)
+        {
+            triangles0.Add(i);
+            triangles1.Add(i);
+            triangles2.Add(i);
+        }
 
 
-        // // Shorten trail if necessary
-        // if (vertices[1].Count >= trailLength)
-        // {
-        //     for (int i = 0; i < trails.Length; i++)
-        //     {
-        //         // remove Triangles
-        //         for (int j = 0; j < 12; j++)
-        //         {
-        //             triangles[i].RemoveAt(0);
-        //         }
-        //     }
-        // }
-        // DrawTrail();
+        // Shorten trail if necessary
+        if (vertices1.Count >= trailLength)
+        {
+            // remove Triangles
+            for (int j = 0; j < 12; j++)
+            {
+                triangles0.RemoveAt(0);
+                triangles1.RemoveAt(0);
+                triangles2.RemoveAt(0);
+            }
+        }
+        DrawTrail();
     }
 
     // Draw Trail Function
     void DrawTrail()
     {
-        // for (int i = 0; i < trails.Length; i++)
-        // {
-        //     trailFilter[i].mesh.vertices = vertices[i].ToArray();
-        //     trailFilter[i].mesh.triangles = triangles[i].ToArray();
+        trailFilter[0].mesh.vertices = vertices0.ToArray();
+        trailFilter[0].mesh.triangles = triangles0.ToArray();
+        trailFilter[1].mesh.vertices = vertices1.ToArray();
+        trailFilter[1].mesh.triangles = triangles1.ToArray();
+        trailFilter[2].mesh.vertices = vertices2.ToArray();
+        trailFilter[2].mesh.triangles = triangles2.ToArray();
 
-        //     trailCollider[i].sharedMesh = trailFilter[i].mesh;
-        // }
+        trailCollider[0].sharedMesh = trailFilter[0].mesh;
+        trailCollider[1].sharedMesh = trailFilter[1].mesh;
+        trailCollider[2].sharedMesh = trailFilter[2].mesh;
     }
 
     [ClientRpc]
