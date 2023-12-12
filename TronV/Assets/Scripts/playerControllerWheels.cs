@@ -55,7 +55,7 @@ public class playerControllerWheels : NetworkBehaviour
     public GameObject trailSpawn;
     private GameObject specScreen;
     private Button btnSpectate, btnQuit;
-    private GameObject gameStartScreen;
+private GameObject gameStartScreen;
     private Button btnGameStart;
     private GameObject networkManager;
 
@@ -90,7 +90,7 @@ public class playerControllerWheels : NetworkBehaviour
     public float trailTransparency = 0.8f;
     public float trailGlowScale = 0.01f;
     public float trailLength = 1800;
-    private Vector3 initialPos;
+private Vector3 initialPos;
     private Quaternion initialRot;
 
 
@@ -111,7 +111,7 @@ public class playerControllerWheels : NetworkBehaviour
         {
             foreach (Transform child in screenContainer.transform) {
                 if (child.gameObject.tag == "screenSpectator") this.specScreen = child.gameObject;
-            }
+}
             if (isServer) {
                 foreach (Transform child in screenContainer.transform) {
                     if (child.gameObject.tag == "gameStartScreen") this.gameStartScreen = child.gameObject;
@@ -222,7 +222,7 @@ public class playerControllerWheels : NetworkBehaviour
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
 
         // Check for terrain collisions
-        if (rb.velocity.magnitude < 0.2 && isLocalPlayer && frameCounter > 20) {
+        if (rb.velocity.magnitude < 0.2 && isLocalPlayer && frameCounter > 20 && trailActive) {
             // terrain collision
             Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
@@ -242,7 +242,7 @@ public class playerControllerWheels : NetworkBehaviour
     void InitPlayer()
     {
         this.isAlive = true;
-        initialPos = this.rb.transform.position;
+initialPos = this.rb.transform.position;
         initialRot = this.rb.transform.rotation;
         SetPlayerColor();
     }
@@ -302,7 +302,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Trail Logic Initialization
     void ActivateTrail(bool _Old, bool _New)
     {
-        if (!_New) {
+if (!_New) {
             return;
         }
 
