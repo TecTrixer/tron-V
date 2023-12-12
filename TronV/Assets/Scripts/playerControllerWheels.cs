@@ -204,7 +204,7 @@ public class playerControllerWheels : NetworkBehaviour
     }
 
     // Game Logic Functions
-    void KillPlayer()
+    void KillPlayer(bool _Old, bool _New)
     {
         // Kill Player
         this.rb.isKinematic = false;
@@ -394,14 +394,18 @@ public class playerControllerWheels : NetworkBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("trail")) {
+            Debug.Log(collision.gameObject.tag);
+            /*
             setDead();
+            Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
-            Camera.main.transform.eulerAngles = new Vector3(0, 0, 0); 
+            Camera.main.transform.eulerAngles = new Vector3(0, 0, 0); */
         }
     }
 
     // Remote Call kill player
     [Command]
+
     void setDead() {
         this.isAlive = false;
     }
