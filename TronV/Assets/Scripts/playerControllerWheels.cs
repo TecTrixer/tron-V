@@ -425,6 +425,9 @@ public class playerControllerWheels : NetworkBehaviour
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
+        if (!isLocalPlayer) {
+            return;
+        }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
             setDead();
             Camera.main.transform.SetParent(null);
