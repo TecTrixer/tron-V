@@ -78,6 +78,7 @@ public class playerControllerWheels : NetworkBehaviour
     public float leanToTurn = 1f;
     public float turnSlowDown = 0.2f;
     private float curLean = 0f;
+    private int frameCounter = 0;
 
     // Trail Tune Variables
     public float trailScale = 0.1f;
@@ -194,6 +195,17 @@ public class playerControllerWheels : NetworkBehaviour
         Camera.main.fieldOfView = Mathf.Lerp(60, 75, speedPerc);
         Camera.main.transform.localRotation = Quaternion.Euler(15 - 10 * speedPerc, 0, -0.25f * curLean);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
+
+        // Check for terrain collisions
+        if (rb.velocity.magnitude < 0.2 && isLocalPlayer && frameCounter > 20) {
+            // terrain collision
+            Camera.main.transform.SetParent(null);
+            Camera.main.transform.position = new Vector3(0, 7, 0);
+            Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
+            setDead();
+            SpectateScreen();
+        }
+        if (frameCounter < 20) this.frameCounter++;
     }
 
 
