@@ -126,6 +126,7 @@ public class playerControllerWheels : NetworkBehaviour
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -1);
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
         InitLocalPlayer(startScreenController.playerColor, startScreenController.playerName);
+        this.nameContainer.SetActive(false);
     }
 
     [Command]
@@ -241,6 +242,8 @@ public class playerControllerWheels : NetworkBehaviour
         this.rb.detectCollisions = false;
         this.model.SetActive(false);
         this.headLight.SetActive(false);
+        this.nameContainer.SetActive(false);
+        this.rb.gameObject.SetActive(false);
         for (int i = 0; i < trails.Length; i++) {
             Mesh.Destroy(this.trailFilter[i]);
             this.trailRenderer[i].enabled = false;
