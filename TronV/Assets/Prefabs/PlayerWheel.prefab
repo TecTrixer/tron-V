@@ -322,7 +322,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -722,6 +722,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  gameActive: 0
+  trailActive: 0
   wheels: {fileID: 8370400239574765070}
   wFrontL: {fileID: 7164252677151467777}
   wFrontR: {fileID: 4894294828307783712}
