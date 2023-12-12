@@ -53,10 +53,10 @@ public class playerControllerWheels : NetworkBehaviour
     public GameObject trailEmU;   // Upper emissive Trail
     private GameObject[] trails;
     public GameObject trailSpawn;
-    private GameObject specScreen;
+    private GameObject deathScreen, specScreen;
     private Button btnSpectate, btnQuit;
-private GameObject gameStartScreen;
-    private Button btnGameStart;
+    private GameObject gameStartScreen;
+    private Button btnGameStart, btnQuitSpec;
     private GameObject networkManager;
 
     // Player Prefab references
@@ -108,12 +108,22 @@ private GameObject gameStartScreen;
         initialPos = this.rb.transform.position;
         initialRot = this.rb.transform.rotation;
 
-        // Setup Spectator screen
+        // Setup screen canvases
         foreach (GameObject screenContainer in GameObject.FindGameObjectsWithTag("screenContainer"))
         {
+            // Get Death Screen
             foreach (Transform child in screenContainer.transform) {
-                if (child.gameObject.tag == "screenSpectator") this.specScreen = child.gameObject;
-}
+                if (child.gameObject.tag == "deathScreen") this.deathScreen = child.gameObject;
+            }
+            foreach (Transform child in this.deathScreen.transform) {
+                if (child.gameObject.tag == "btnSpectate") {
+                    this.btnSpectate = (Button)child.gameObject.GetComponent<Button>();
+                }
+                if (child.gameObject.tag == "btnQuit") {
+                    this.btnQuit = child.gameObject.GetComponent<Button>();
+                }
+            }
+            // Get Start Button for Host
             if (isServer) {
                 foreach (Transform child in screenContainer.transform) {
                     if (child.gameObject.tag == "gameStartScreen") this.gameStartScreen = child.gameObject;
@@ -125,16 +135,18 @@ private GameObject gameStartScreen;
                 }
                 this.gameStartScreen.SetActive(true);
                 this.btnGameStart.onClick.AddListener(StartGame);
+            }
 
+            // Get Spectator screen
+            foreach (Transform child in screenContainer.transform) {
+                if (child.gameObject.tag == "screenSpectator") this.specScreen = child.gameObject;
             }
             foreach (Transform child in this.specScreen.transform) {
-                if (child.gameObject.tag == "btnSpectate") {
-                    this.btnSpectate = (Button)child.gameObject.GetComponent<Button>();
-                }
                 if (child.gameObject.tag == "btnQuit") {
-                    this.btnQuit = child.gameObject.GetComponent<Button>();
+                    this.btnQuitSpec = child.gameObject.GetComponent<Button>();
                 }
             }
+            this.btnQuitSpec.onClick.AddListener(OnQuit);
         }
 
         [Command]
@@ -232,7 +244,7 @@ private GameObject gameStartScreen;
             setDead();
             SpectateScreen();
         }
-        if (frameCounter < 20) this.frameCounter++;
+        if (frameCounter < 40) this.frameCounter++;
     }
 
 
@@ -270,7 +282,8 @@ private GameObject gameStartScreen;
     }
 
     void OnSpectate() {
-        this.specScreen.SetActive(false);
+        this.deathScreen.SetActive(false);
+        this.specScreen.SetActive(true);
         this.isSpectator = true;
     }
 
@@ -293,7 +306,7 @@ private GameObject gameStartScreen;
     }
 
     void SpectateScreen() {
-        this.specScreen.SetActive(true);
+        this.deathScreen.SetActive(true);
         this.btnSpectate.onClick.AddListener(OnSpectate);
         this.btnQuit.onClick.AddListener(OnQuit);
     }
