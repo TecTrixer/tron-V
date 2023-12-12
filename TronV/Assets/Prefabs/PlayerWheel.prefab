@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 7557777400304001601}
   - component: {fileID: 4158511778037113017}
   - component: {fileID: 350444070158254371}
+  - component: {fileID: 4030488759556797001}
   m_Layer: 0
   m_Name: headLight
   m_TagString: Untagged
@@ -268,8 +269,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 887393309312881482}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.026351383, y: 0, z: 0, w: 0.99965274}
-  m_LocalPosition: {x: 0, y: 0.11, z: 0.16}
+  m_LocalRotation: {x: 0.026351383, y: -0, z: -0, w: 0.99965274}
+  m_LocalPosition: {x: 0, y: 0.11, z: 0.16000006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -287,8 +288,8 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 5.15
-  m_Range: 2
+  m_Intensity: 6
+  m_Range: 3
   m_SpotAngle: 97.58827
   m_InnerSpotAngle: 26.162617
   m_CookieSize: 10
@@ -360,6 +361,18 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!122 &4030488759556797001
+Halo:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887393309312881482}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4286611584
+  m_Size: 6
 --- !u!1 &1608343241090073308
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,7 +536,7 @@ Transform:
   m_GameObject: {fileID: 2806937902582987745}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.147}
+  m_LocalPosition: {x: 0, y: 0.008, z: -0.147}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -634,9 +647,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7557777400304001601}
   - {fileID: 7761711976825311770}
   - {fileID: 1419321274577505882}
-  - {fileID: 7557777400304001601}
   - {fileID: 7569490551829427936}
   - {fileID: 4356991797789122119}
   - {fileID: 7254799231399900671}
@@ -713,6 +726,8 @@ MonoBehaviour:
   wFrontR: {fileID: 4894294828307783712}
   wBackL: {fileID: 2050361350872036199}
   wBackR: {fileID: 2890352816832834961}
+  spectatorSpeed: 0.1
+  spectatorAng: 70
   trailEmL: {fileID: 8727666648280390643}
   trail: {fileID: 7823936357239387804}
   trailEmU: {fileID: 1904782064630339717}
