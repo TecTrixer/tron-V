@@ -435,7 +435,6 @@ public class playerControllerWheels : NetworkBehaviour
 
     // Remote Call kill player
     [Command]
-
     void setDead() {
         this.isAlive = false;
     }

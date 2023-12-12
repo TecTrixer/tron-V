@@ -726,8 +726,8 @@ MonoBehaviour:
   wFrontR: {fileID: 4894294828307783712}
   wBackL: {fileID: 2050361350872036199}
   wBackR: {fileID: 2890352816832834961}
-  spectatorSpeed: 0.1
-  spectatorAng: 70
+  spectatorSpeed: 0.3
+  spectatorAng: 20
   trailEmL: {fileID: 8727666648280390643}
   trail: {fileID: 7823936357239387804}
   trailEmU: {fileID: 1904782064630339717}
@@ -750,7 +750,7 @@ MonoBehaviour:
   trailDiag: 10
   trailTransparency: 0.8
   trailGlowScale: 0.01
-  trailLength: 5000
+  trailLength: 1800
 --- !u!114 &2751886413710435547
 MonoBehaviour:
   m_ObjectHideFlags: 0
