@@ -237,6 +237,9 @@ public class playerControllerWheels : NetworkBehaviour
     // Game Logic Functions
     void KillPlayer(bool _Old, bool _New)
     {
+        // Free Camera
+        Camera.main.transform.SetParent(null);
+
         // Kill Player
         this.rb.isKinematic = false;
         this.rb.detectCollisions = false;
@@ -432,7 +435,6 @@ public class playerControllerWheels : NetworkBehaviour
         }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
             setDead();
-            Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
             Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
             SpectateScreen();
