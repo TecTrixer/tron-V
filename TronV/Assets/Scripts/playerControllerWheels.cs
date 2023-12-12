@@ -246,7 +246,6 @@ public class playerControllerWheels : NetworkBehaviour
             this.trailRenderer[i].enabled = false;
             this.trailCollider[i].enabled = false;
         }
-        if (isLocalPlayer) SpectateScreen();
     }
 
     void SpectateScreen() {
@@ -433,6 +432,7 @@ public class playerControllerWheels : NetworkBehaviour
             Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
             Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
+            SpectateScreen();
         }
     }
 
