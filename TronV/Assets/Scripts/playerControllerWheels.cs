@@ -253,8 +253,8 @@ public class playerControllerWheels : NetworkBehaviour
 
     void SpectateScreen() {
         this.specScreen.SetActive(true);
-        this.btnSpectate.onClick.AddListener(delegate () { this.OnSpectate(); });
-        this.btnQuit.onClick.AddListener(delegate () { this.OnQuit(); });
+        this.btnSpectate.onClick.AddListener(OnSpectate);
+        this.btnQuit.onClick.AddListener(OnQuit);
     }
 
 
