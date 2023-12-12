@@ -12,6 +12,9 @@ TagManager:
   - screenContainer
   - walls
   - networkManager
+  - gameStartScreen
+  - btnGameStart
+  - player
   layers:
   - Default
   - TransparentFX
