@@ -53,6 +53,7 @@ public class playerControllerWheels : NetworkBehaviour
     public GameObject trailSpawn;
     private GameObject specScreen;
     private Button btnSpectate, btnQuit;
+    private GameObject networkManager;
 
     // Player Prefab references
     public GameObject model;
@@ -113,6 +114,11 @@ public class playerControllerWheels : NetworkBehaviour
                     this.btnQuit = child.gameObject.GetComponent<Button>();
                 }
             }
+        }
+
+        // Get netowrk Manager
+        foreach (GameObject networkManager in GameObject.FindGameObjectsWithTag("networkManager")) {
+            this.networkManager = networkManager;
         }
 
         // Set Camera 
@@ -218,6 +224,7 @@ public class playerControllerWheels : NetworkBehaviour
     }
 
     void OnQuit() {
+        networkManager.GetComponent<MainGameHUD>().Stop();
         SceneManager.LoadScene("startScreen");
     }
 

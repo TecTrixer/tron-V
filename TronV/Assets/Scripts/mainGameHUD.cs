@@ -6,7 +6,7 @@ using UnityEngine;
 public class MainGameHUD : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    public void StartPlayer()
     {
         switch(startScreenController.mode) {
             case 0:
@@ -17,6 +17,20 @@ public class MainGameHUD : MonoBehaviour
             case 1:
             // Host
                 NetworkManager.singleton.StartHost();
+                break;
+        }
+    }
+
+    public void Stop()
+    {
+        switch(startScreenController.mode) {
+            case 0:
+            // Join
+                NetworkManager.singleton.StopClient();
+                break;
+            case 1:
+            // Host
+                NetworkManager.singleton.StopHost();
                 break;
         }
     }
