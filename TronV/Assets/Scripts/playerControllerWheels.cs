@@ -237,9 +237,6 @@ public class playerControllerWheels : NetworkBehaviour
     // Game Logic Functions
     void KillPlayer(bool _Old, bool _New)
     {
-        // Free Camera
-        Camera.main.transform.SetParent(null);
-
         // Kill Player
         this.rb.isKinematic = false;
         this.rb.detectCollisions = false;
@@ -248,9 +245,9 @@ public class playerControllerWheels : NetworkBehaviour
         this.nameContainer.SetActive(false);
         this.rb.gameObject.SetActive(false);
         for (int i = 0; i < trails.Length; i++) {
-            Mesh.Destroy(this.trailFilter[i]);
-            this.trailRenderer[i].enabled = false;
-            this.trailCollider[i].enabled = false;
+            this.trailFilter[i].gameObject.SetActive(false);
+            this.trailRenderer[i].gameObject.SetActive(false);
+            this.trailCollider[i].gameObject.SetActive(false);
         }
     }
 
@@ -434,9 +431,10 @@ public class playerControllerWheels : NetworkBehaviour
             return;
         }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
-            setDead();
+            Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
             Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
+            setDead();
             SpectateScreen();
         }
     }
