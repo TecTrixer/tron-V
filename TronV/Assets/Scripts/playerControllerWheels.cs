@@ -17,7 +17,9 @@ public class playerControllerWheels : NetworkBehaviour
     // Private Game Logic Variables
     [SyncVar(hook = nameof(KillPlayer))]
     private bool isAlive = true;
-    [SyncVar(hook = nameof(ActivateTrail))]
+    [SyncVar(hook = nameof(ResetPlayers))]
+    public bool gameActive = false;
+    [SyncVar]
     public bool trailActive = false;
     private bool isSpectator = false;
     
@@ -82,6 +84,7 @@ public class playerControllerWheels : NetworkBehaviour
     public float turnSlowDown = 0.2f;
     private float curLean = 0f;
     private int frameCounter = 0;
+    private float[] speeds;
 
     // Trail Tune Variables
     public float trailScale = 0.1f;
@@ -152,7 +155,7 @@ public class playerControllerWheels : NetworkBehaviour
         [Command]
         void StartGame() {
             foreach (GameObject player in GameObject.FindGameObjectsWithTag("player")) {
-                player.GetComponent<playerControllerWheels>().trailActive = true;
+                player.GetComponent<playerControllerWheels>().gameActive = true;
             }
             this.gameStartScreen.SetActive(false);
         }
@@ -168,6 +171,12 @@ public class playerControllerWheels : NetworkBehaviour
         Camera.main.transform.localEulerAngles = new Vector3(15, 0, 0);
         InitLocalPlayer(startScreenController.playerColor, startScreenController.playerName);
         this.nameContainer.SetActive(false);
+
+        // Set speed controller
+        speeds = new float[10];
+        for (int i = 0; i < speeds.Length; i++) {
+            speeds[i] = 1;
+        }
     }
 
     [Command]
@@ -197,7 +206,28 @@ public class playerControllerWheels : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (this.isAlive) DrivePhysics();
+        if (this.isAlive && this.gameActive) HandleRampCollisions();
         if (this.isSpectator) SpectatorPhysics();
+        if (this.isAlive && this.gameActive && frameCounter == 30) InitMesh();
+    }
+
+    void HandleRampCollisions() {
+        // Check for terrain collisions
+        float sumSpeed = 0;
+        for (int i = 1; i < speeds.Length; i++) {
+            speeds[i-1] = speeds[i];
+            sumSpeed += speeds[i];
+        }
+        speeds[speeds.Length-1] = rb.velocity.magnitude;
+        sumSpeed += rb.velocity.magnitude;
+        if (sumSpeed < 10 && isLocalPlayer && frameCounter > 20) {
+            // terrain collision
+            Camera.main.transform.SetParent(null);
+            Camera.main.transform.position = new Vector3(0, 7, 0);
+            Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
+            setDead();
+            SpectateScreen();
+        }
     }
 
     void DrivePhysics() {
@@ -235,16 +265,7 @@ public class playerControllerWheels : NetworkBehaviour
         Camera.main.transform.localRotation = Quaternion.Euler(15 - 10 * speedPerc, 0, -0.25f * curLean);
         Camera.main.transform.localPosition = new Vector3(0, 0.5f, -0.8f - 0.2f * speedPerc);
 
-        // Check for terrain collisions
-        if (rb.velocity.magnitude < 0.2 && isLocalPlayer && frameCounter > 20 && trailActive) {
-            // terrain collision
-            Camera.main.transform.SetParent(null);
-            Camera.main.transform.position = new Vector3(0, 7, 0);
-            Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
-            setDead();
-            SpectateScreen();
-        }
-        if (frameCounter < 40) this.frameCounter++;
+        if (gameActive) frameCounter++;
     }
 
 
@@ -313,20 +334,23 @@ public class playerControllerWheels : NetworkBehaviour
 
 
     // Trail Logic Initialization
-    void ActivateTrail(bool _Old, bool _New)
+    void ResetPlayers(bool _Old, bool _New)
     {
         if (!_New) {
             return;
         }
 
         // Reset player position
-        frameCounter = 0;
         if (isLocalPlayer) {
             this.rb.transform.position = initialPos;
             this.rb.transform.rotation = initialRot;
             this.rb.velocity = new Vector3(0, 0, 0);
             this.curLean = 0f;
         }
+        InitTrail();
+    }
+
+    void InitTrail()  {
         // Define Trails
         trails = new GameObject[3]{
             trailEmL,
@@ -360,7 +384,7 @@ public class playerControllerWheels : NetworkBehaviour
         // initialize Meshes for trail
         if (isLocalPlayer)
         {
-            InitMesh();
+            //InitMesh();
         }
     }
 
@@ -410,6 +434,7 @@ public class playerControllerWheels : NetworkBehaviour
             triangles1.Add(i);
             triangles2.Add(i);
         }
+        trailActive = true;
     }
 
     // Update Trail Lists
@@ -493,7 +518,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
-        if (!isLocalPlayer || !trailActive || frameCounter < 30) {
+        if (!isLocalPlayer || !gameActive || frameCounter < 30) {
             return;
         }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
