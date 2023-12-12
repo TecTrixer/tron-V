@@ -196,7 +196,7 @@ public class playerControllerWheels : NetworkBehaviour
     }
 
 
-    void SpectatorPhysics() {        
+    void SpectatorPhysics() {    
         Camera.main.transform.Rotate(0, movementSpectator[1]*spectatorAng, 0);
         Camera.main.transform.Translate(0, movementSpectator[2]*spectatorSpeed, movementSpectator[0]*spectatorSpeed);
     }
@@ -243,7 +243,6 @@ public class playerControllerWheels : NetworkBehaviour
         this.model.SetActive(false);
         this.headLight.SetActive(false);
         this.nameContainer.SetActive(false);
-        this.rb.gameObject.SetActive(false);
         for (int i = 0; i < trails.Length; i++) {
             this.trailFilter[i].gameObject.SetActive(false);
             this.trailRenderer[i].gameObject.SetActive(false);
