@@ -237,9 +237,10 @@ public class playerControllerWheels : NetworkBehaviour
     // Game Logic Functions
     void KillPlayer(bool _Old, bool _New)
     {
+        Debug.Log("killing: " + netId);
         // Kill Player
-        this.rb.isKinematic = false;
-        this.rb.detectCollisions = false;
+        //this.rb.isKinematic = false;
+        //this.rb.detectCollisions = false;
         this.model.SetActive(false);
         this.headLight.SetActive(false);
         this.nameContainer.SetActive(false);
