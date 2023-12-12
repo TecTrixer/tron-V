@@ -272,7 +272,7 @@ public class playerControllerWheels : NetworkBehaviour
 
 
     void SpectatorPhysics() {    
-        Camera.main.transform.Rotate(0, movementSpectator[1]*spectatorAng, 0);
+        Camera.main.transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y + movementSpectator[1]*spectatorAng, 0);
         Camera.main.transform.Translate(0, movementSpectator[2]*spectatorSpeed, movementSpectator[0]*spectatorSpeed);
     }
     // Initialize Player
