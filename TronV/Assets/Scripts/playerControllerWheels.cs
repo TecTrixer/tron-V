@@ -90,7 +90,7 @@ private GameObject gameStartScreen;
     public float trailTransparency = 0.8f;
     public float trailGlowScale = 0.01f;
     public float trailLength = 1800;
-private Vector3 initialPos;
+    private Vector3 initialPos;
     private Quaternion initialRot;
 
 
@@ -105,6 +105,8 @@ private Vector3 initialPos;
     {
         this.movement = Vector2.zero;
         this.rb = this.gameObject.GetComponent<Rigidbody>();
+        initialPos = this.rb.transform.position;
+        initialRot = this.rb.transform.rotation;
 
         // Setup Spectator screen
         foreach (GameObject screenContainer in GameObject.FindGameObjectsWithTag("screenContainer"))
@@ -242,8 +244,6 @@ private Vector3 initialPos;
     void InitPlayer()
     {
         this.isAlive = true;
-initialPos = this.rb.transform.position;
-        initialRot = this.rb.transform.rotation;
         SetPlayerColor();
     }
 
@@ -302,16 +302,18 @@ initialPos = this.rb.transform.position;
     // Trail Logic Initialization
     void ActivateTrail(bool _Old, bool _New)
     {
-if (!_New) {
+        if (!_New) {
             return;
         }
 
         // Reset player position
-        this.rb.transform.position = initialPos;
-        this.rb.transform.rotation = initialRot;
-        this.rb.velocity = new Vector3(0, 0, 0);
-        this.curLean = 0f;
-
+        frameCounter = 0;
+        if (isLocalPlayer) {
+            this.rb.transform.position = initialPos;
+            this.rb.transform.rotation = initialRot;
+            this.rb.velocity = new Vector3(0, 0, 0);
+            this.curLean = 0f;
+        }
         // Define Trails
         trails = new GameObject[3]{
             trailEmL,
@@ -478,10 +480,11 @@ if (!_New) {
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
-        if (!isLocalPlayer || !trailActive) {
+        if (!isLocalPlayer || !trailActive || frameCounter < 30) {
             return;
         }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
+            Debug.Log("is Trail: " + collision.gameObject.CompareTag("trail"));
             Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
             Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
