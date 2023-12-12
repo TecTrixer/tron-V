@@ -733,7 +733,7 @@ MonoBehaviour:
   trailEmU: {fileID: 1904782064630339717}
   trailSpawn: {fileID: 2806937902582987745}
   model: {fileID: 6988728212085868704}
-  headLight: {fileID: 0}
+  headLight: {fileID: 887393309312881482}
   nameTextMesh: {fileID: 2144506947080384801}
   nameContainer: {fileID: 1608343241090073308}
   emissivePolygon: {fileID: 1808354514408561759}
@@ -750,7 +750,7 @@ MonoBehaviour:
   trailDiag: 10
   trailTransparency: 0.8
   trailGlowScale: 0.01
-  trailLength: 1800
+  trailLength: 5000
 --- !u!114 &2751886413710435547
 MonoBehaviour:
   m_ObjectHideFlags: 0

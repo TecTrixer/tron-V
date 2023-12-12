@@ -6,6 +6,12 @@ TagManager:
   tags:
   - trail
   - trailContainer
+  - screenSpectator
+  - btnSpectate
+  - btnQuit
+  - screenContainer
+  - walls
+  - networkManager
   layers:
   - Default
   - TransparentFX
