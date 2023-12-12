@@ -536,7 +536,7 @@ Transform:
   m_GameObject: {fileID: 2806937902582987745}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.008, z: -0.147}
+  m_LocalPosition: {x: -0, y: 0.008, z: -0.269}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -733,6 +733,7 @@ MonoBehaviour:
   trailEmU: {fileID: 1904782064630339717}
   trailSpawn: {fileID: 2806937902582987745}
   model: {fileID: 6988728212085868704}
+  headLight: {fileID: 0}
   nameTextMesh: {fileID: 2144506947080384801}
   nameContainer: {fileID: 1608343241090073308}
   emissivePolygon: {fileID: 1808354514408561759}
