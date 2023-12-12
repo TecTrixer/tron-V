@@ -14,8 +14,10 @@ using UnityEngine.SceneManagement;
 public class playerControllerWheels : NetworkBehaviour
 {
     // Private Game Logic Variables
+    [SyncVar(hook = nameof(KillPlayer))]
     private bool isAlive = true;
-    private bool trailActive = true;
+    //private bool trailActive = false;
+    private bool isSpectator = false;
     
     // Private Physics Variables
     private Rigidbody rb;
@@ -51,6 +53,7 @@ public class playerControllerWheels : NetworkBehaviour
 
     // Player Prefab references
     public GameObject model;
+    public GameObject headLight;
     [SyncVar(hook = nameof(OnColorChange))]
     private Color playerColor = new Color();
     [SyncVar(hook = nameof(OnNameChange))]
@@ -111,7 +114,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        DrawTrail();
+        if (isAlive) DrawTrail();
         if (!isLocalPlayer)
         {
             nameContainer.transform.LookAt(Camera.main.transform);
@@ -119,14 +122,15 @@ public class playerControllerWheels : NetworkBehaviour
         }
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
         this.movementSpectator = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), -1* Input.GetAxis("Fire3") + Input.GetAxis("Jump"));
-        UpdateTrail();
+        if (isAlive) UpdateTrail();
     }
 
     // Update physics
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
-        DrivePhysics();
+        if (this.isAlive) DrivePhysics();
+        if (this.isSpectator) SpectatorPhysics();
     }
 
     void DrivePhysics() {
@@ -195,11 +199,28 @@ public class playerControllerWheels : NetworkBehaviour
         this.nameTextMesh.text = _New;
     }
 
+    void OnQuit() {
+        SceneManager.LoadScene("startScreen");
+    }
+
     // Game Logic Functions
     void KillPlayer()
     {
         // Kill Player
-        SceneManager.LoadScene("startScreen");
+        this.rb.isKinematic = false;
+        this.rb.detectCollisions = false;
+        this.model.SetActive(false);
+        this.headLight.SetActive(false);
+        for (int i = 0; i < trails.Length; i++) {
+            Mesh.Destroy(this.trailFilter[i]);
+            this.trailRenderer[i].enabled = false;
+            this.trailCollider[i].enabled = false;
+        }
+        SpectateScreen();
+    }
+
+    void SpectateScreen() {
+
     }
 
 
@@ -369,17 +390,19 @@ public class playerControllerWheels : NetworkBehaviour
         trailCollider[2].sharedMesh = trailFilter[2].mesh;
     }
 
-    [ClientRpc]
-    void RpcDrawTrail() {
-        DrawTrail();
-    }
-
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
-        /*if (collision.gameObject.CompareTag("trail")) {
-            this.isAlive = false;
-            this.KillPlayer();
-        }*/
+        if (collision.gameObject.CompareTag("trail")) {
+            setDead();
+            Camera.main.transform.position = new Vector3(0, 7, 0);
+            Camera.main.transform.eulerAngles = new Vector3(0, 0, 0); 
+        }
+    }
+
+    // Remote Call kill player
+    [Command]
+    void setDead() {
+        this.isAlive = false;
     }
 }
