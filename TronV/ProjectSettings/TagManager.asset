@@ -15,6 +15,7 @@ TagManager:
   - gameStartScreen
   - btnGameStart
   - player
+  - deathScreen
   layers:
   - Default
   - TransparentFX

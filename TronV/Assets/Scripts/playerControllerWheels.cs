@@ -111,7 +111,7 @@ private Vector3 initialPos;
         {
             // Get Death Screen
             foreach (Transform child in screenContainer.transform) {
-                if (child.gameObject.tag == "deathScreen ") this.deathScreen = child.gameObject;
+                if (child.gameObject.tag == "deathScreen") this.deathScreen = child.gameObject;
             }
             foreach (Transform child in this.deathScreen.transform) {
                 if (child.gameObject.tag == "btnSpectate") {
@@ -121,7 +121,6 @@ private Vector3 initialPos;
                     this.btnQuit = child.gameObject.GetComponent<Button>();
                 }
             }
-
             // Get Start Button for Host
             if (isServer) {
                 foreach (Transform child in screenContainer.transform) {
@@ -138,7 +137,7 @@ private Vector3 initialPos;
 
             // Get Spectator screen
             foreach (Transform child in screenContainer.transform) {
-                if (child.gameObject.tag == "screenSpectator ") this.specScreen = child.gameObject;
+                if (child.gameObject.tag == "screenSpectator") this.specScreen = child.gameObject;
             }
             foreach (Transform child in this.specScreen.transform) {
                 if (child.gameObject.tag == "btnQuit") {
@@ -243,7 +242,7 @@ private Vector3 initialPos;
             setDead();
             SpectateScreen();
         }
-        if (frameCounter < 20) this.frameCounter++;
+        if (frameCounter < 40) this.frameCounter++;
     }
 
 
