@@ -17,7 +17,8 @@ public class playerControllerWheels : NetworkBehaviour
     // Private Game Logic Variables
     [SyncVar(hook = nameof(KillPlayer))]
     private bool isAlive = true;
-    //private bool trailActive = false;
+    [SyncVar(hook = nameof(ActivateTrail))]
+    public bool trailActive = false;
     private bool isSpectator = false;
     
     // Private Physics Variables
@@ -54,6 +55,8 @@ public class playerControllerWheels : NetworkBehaviour
     public GameObject trailSpawn;
     private GameObject specScreen;
     private Button btnSpectate, btnQuit;
+    private GameObject gameStartScreen;
+    private Button btnGameStart;
     private GameObject networkManager;
 
     // Player Prefab references
@@ -86,6 +89,8 @@ public class playerControllerWheels : NetworkBehaviour
     public float trailTransparency = 0.8f;
     public float trailGlowScale = 0.01f;
     public float trailLength = 1800;
+    private Vector3 initialPos;
+    private Quaternion initialRot;
 
 
     // Start is called before the first frame update
@@ -93,7 +98,6 @@ public class playerControllerWheels : NetworkBehaviour
     {
         // Setup Trail
         InitPlayer();
-        InitTrail();
     }
 
     public override void OnStartLocalPlayer()
@@ -107,6 +111,19 @@ public class playerControllerWheels : NetworkBehaviour
             foreach (Transform child in screenContainer.transform) {
                 if (child.gameObject.tag == "screenSpectator") this.specScreen = child.gameObject;
             }
+            if (isServer) {
+                foreach (Transform child in screenContainer.transform) {
+                    if (child.gameObject.tag == "gameStartScreen") this.gameStartScreen = child.gameObject;
+                }
+                foreach (Transform child in this.gameStartScreen.transform) {
+                    if (child.gameObject.tag == "btnGameStart") {
+                        this.btnGameStart = (Button)child.gameObject.GetComponent<Button>();
+                    }
+                }
+                this.gameStartScreen.SetActive(true);
+                this.btnGameStart.onClick.AddListener(StartGame);
+
+            }
             foreach (Transform child in this.specScreen.transform) {
                 if (child.gameObject.tag == "btnSpectate") {
                     this.btnSpectate = (Button)child.gameObject.GetComponent<Button>();
@@ -115,6 +132,14 @@ public class playerControllerWheels : NetworkBehaviour
                     this.btnQuit = child.gameObject.GetComponent<Button>();
                 }
             }
+        }
+
+        [Command]
+        void StartGame() {
+            foreach (GameObject player in GameObject.FindGameObjectsWithTag("player")) {
+                player.GetComponent<playerControllerWheels>().trailActive = true;
+            }
+            this.gameStartScreen.SetActive(false);
         }
 
         // Get netowrk Manager
@@ -141,7 +166,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isAlive) DrawTrail();
+        if (isAlive && trailActive) DrawTrail();
         if (!isLocalPlayer)
         {
             nameContainer.transform.LookAt(Camera.main.transform);
@@ -149,7 +174,7 @@ public class playerControllerWheels : NetworkBehaviour
         }
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
         this.movementSpectator = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), -1* Input.GetAxis("Fire3") + Input.GetAxis("Jump"));
-        if (isAlive) UpdateTrail();
+        if (isAlive && trailActive) UpdateTrail();
     }
 
     // Update physics
@@ -205,6 +230,8 @@ public class playerControllerWheels : NetworkBehaviour
     void InitPlayer()
     {
         this.isAlive = true;
+        initialPos = this.rb.transform.position;
+        initialRot = this.rb.transform.rotation;
         SetPlayerColor();
     }
 
@@ -261,8 +288,18 @@ public class playerControllerWheels : NetworkBehaviour
 
 
     // Trail Logic Initialization
-    void InitTrail()
+    void ActivateTrail(bool _Old, bool _New)
     {
+        if (!_New) {
+            return;
+        }
+
+        // Reset player position
+        this.rb.transform.position = initialPos;
+        this.rb.transform.rotation = initialRot;
+        this.rb.velocity = new Vector3(0, 0, 0);
+        this.curLean = 0f;
+
         // Define Trails
         trails = new GameObject[3]{
             trailEmL,
@@ -429,7 +466,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
-        if (!isLocalPlayer) {
+        if (!isLocalPlayer || !trailActive) {
             return;
         }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
