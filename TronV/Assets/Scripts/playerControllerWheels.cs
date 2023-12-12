@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class playerControllerWheels : NetworkBehaviour
 {
@@ -50,6 +51,8 @@ public class playerControllerWheels : NetworkBehaviour
     public GameObject trailEmU;   // Upper emissive Trail
     private GameObject[] trails;
     public GameObject trailSpawn;
+    private GameObject specScreen;
+    private Button btnSpectate, btnQuit;
 
     // Player Prefab references
     public GameObject model;
@@ -95,6 +98,22 @@ public class playerControllerWheels : NetworkBehaviour
     {
         this.movement = Vector2.zero;
         this.rb = this.gameObject.GetComponent<Rigidbody>();
+
+        // Setup Spectator screen
+        foreach (GameObject specScreen in GameObject.FindGameObjectsWithTag("screenSpectator"))
+        {
+            this.specScreen = specScreen;
+            foreach (GameObject child in specScreen.transform) {
+                if (child.tag == "btnSpectate") {
+                    this.btnSpectate = child.GetComponent<Button>();
+                    this.btnSpectate.onClick.AddListener(OnSpectate);
+                }
+                if (child.tag == "btnQuit") {
+                    this.btnQuit = child.GetComponent<Button>();
+                    this.btnQuit.onClick.AddListener(OnQuit);
+                }
+            }
+        }
 
         // Set Camera 
         Camera.main.transform.SetParent(transform);
@@ -203,6 +222,11 @@ public class playerControllerWheels : NetworkBehaviour
         SceneManager.LoadScene("startScreen");
     }
 
+    void OnSpectate() {
+        this.specScreen.SetActive(false);
+        this.isSpectator = true;
+    }
+
     // Game Logic Functions
     void KillPlayer(bool _Old, bool _New)
     {
@@ -216,11 +240,11 @@ public class playerControllerWheels : NetworkBehaviour
             this.trailRenderer[i].enabled = false;
             this.trailCollider[i].enabled = false;
         }
-        SpectateScreen();
+        if (isLocalPlayer) SpectateScreen();
     }
 
     void SpectateScreen() {
-
+        this.specScreen.SetActive(true);
     }
 
 
