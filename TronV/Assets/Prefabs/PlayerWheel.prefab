@@ -722,12 +722,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  wheels: {fileID: 8370400239574765070}
   wFrontL: {fileID: 7164252677151467777}
   wFrontR: {fileID: 4894294828307783712}
   wBackL: {fileID: 2050361350872036199}
   wBackR: {fileID: 2890352816832834961}
   spectatorSpeed: 0.3
-  spectatorAng: 10
+  spectatorAng: 5
   trailEmL: {fileID: 8727666648280390643}
   trail: {fileID: 7823936357239387804}
   trailEmU: {fileID: 1904782064630339717}

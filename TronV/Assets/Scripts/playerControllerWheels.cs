@@ -25,6 +25,7 @@ public class playerControllerWheels : NetworkBehaviour
     private Vector2 movement;
     private Vector3 movementSpectator;
     private Vector3 velocity;
+    public GameObject wheels;
     public WheelCollider wFrontL;
     public WheelCollider wFrontR;
     public WheelCollider wBackL;
@@ -244,6 +245,7 @@ public class playerControllerWheels : NetworkBehaviour
         this.model.SetActive(false);
         this.headLight.SetActive(false);
         this.nameContainer.SetActive(false);
+        this.wheels.SetActive(false);
         for (int i = 0; i < trails.Length; i++) {
             this.trailFilter[i].gameObject.SetActive(false);
             this.trailRenderer[i].gameObject.SetActive(false);
