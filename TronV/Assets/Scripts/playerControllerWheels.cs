@@ -42,8 +42,8 @@ public class playerControllerWheels : NetworkBehaviour
     private readonly SyncList<int> triangles2 = new SyncList<int>(){};
 
     // Public Tune Variables Spectator
-    public float spectatorSpeed = 0.1f;
-    public float spectatorAng = 70f;
+    public float spectatorSpeed = 0.3f;
+    public float spectatorAng = 20f;
     
     // Public refrences for Trail
     public GameObject trailEmL;   // Lower emissive Trail
@@ -100,17 +100,17 @@ public class playerControllerWheels : NetworkBehaviour
         this.rb = this.gameObject.GetComponent<Rigidbody>();
 
         // Setup Spectator screen
-        foreach (GameObject specScreen in GameObject.FindGameObjectsWithTag("screenSpectator"))
+        foreach (GameObject screenContainer in GameObject.FindGameObjectsWithTag("screenContainer"))
         {
-            this.specScreen = specScreen;
-            foreach (GameObject child in specScreen.transform) {
-                if (child.tag == "btnSpectate") {
-                    this.btnSpectate = child.GetComponent<Button>();
-                    this.btnSpectate.onClick.AddListener(OnSpectate);
+            foreach (Transform child in screenContainer.transform) {
+                if (child.gameObject.tag == "screenSpectator") this.specScreen = child.gameObject;
+            }
+            foreach (Transform child in this.specScreen.transform) {
+                if (child.gameObject.tag == "btnSpectate") {
+                    this.btnSpectate = (Button)child.gameObject.GetComponent<Button>();
                 }
-                if (child.tag == "btnQuit") {
-                    this.btnQuit = child.GetComponent<Button>();
-                    this.btnQuit.onClick.AddListener(OnQuit);
+                if (child.gameObject.tag == "btnQuit") {
+                    this.btnQuit = child.gameObject.GetComponent<Button>();
                 }
             }
         }
@@ -189,10 +189,9 @@ public class playerControllerWheels : NetworkBehaviour
     }
 
 
-    void SpectatorPhysics() {
-        
-        transform.Rotate(0, movementSpectator[0]*spectatorAng, 0);
-        transform.Translate(0, movementSpectator[1]*spectatorSpeed, movementSpectator[2]*spectatorSpeed);
+    void SpectatorPhysics() {        
+        Camera.main.transform.Rotate(0, movementSpectator[1]*spectatorAng, 0);
+        Camera.main.transform.Translate(0, movementSpectator[2]*spectatorSpeed, movementSpectator[0]*spectatorSpeed);
     }
     // Initialize Player
     void InitPlayer()
@@ -245,6 +244,8 @@ public class playerControllerWheels : NetworkBehaviour
 
     void SpectateScreen() {
         this.specScreen.SetActive(true);
+        this.btnSpectate.onClick.AddListener(delegate () { this.OnSpectate(); });
+        this.btnQuit.onClick.AddListener(delegate () { this.OnQuit(); });
     }
 
 
@@ -417,7 +418,7 @@ public class playerControllerWheels : NetworkBehaviour
     // Trail Collisions
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("trail")) {
+        if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
             setDead();
             Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);

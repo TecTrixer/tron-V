@@ -9,6 +9,8 @@ TagManager:
   - screenSpectator
   - btnSpectate
   - btnQuit
+  - screenContainer
+  - walls
   layers:
   - Default
   - TransparentFX
