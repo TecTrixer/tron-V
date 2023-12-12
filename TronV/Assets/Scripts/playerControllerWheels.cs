@@ -522,7 +522,6 @@ public class playerControllerWheels : NetworkBehaviour
             return;
         }
         if (collision.gameObject.CompareTag("trail") || collision.gameObject.CompareTag("walls")) {
-            Debug.Log("is Trail: " + collision.gameObject.CompareTag("trail"));
             Camera.main.transform.SetParent(null);
             Camera.main.transform.position = new Vector3(0, 7, 0);
             Camera.main.transform.eulerAngles = new Vector3(0, 0, 0);
