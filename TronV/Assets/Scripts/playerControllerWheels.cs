@@ -194,6 +194,8 @@ public class playerControllerWheels : NetworkBehaviour
         if (!isLocalPlayer)
         {
             nameContainer.transform.LookAt(Camera.main.transform);
+            Quaternion rot = Quaternion.AngleAxis(180, Camera.main.transform.up);
+            nameContainer.transform.rotation = rot * nameContainer.transform.rotation;
             return;
         }
         this.movement = new Vector2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
